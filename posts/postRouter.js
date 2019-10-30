@@ -4,9 +4,9 @@ const db = require("./postDb");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const posts = await db.get();
-
   try {
+    const posts = await db.get();
+
     res.status(200).json(posts);
   } catch {
     res
@@ -16,9 +16,9 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", validatePostId, async (req, res) => {
-  const post = await db.getById(req.params.id);
-
   try {
+    const post = await db.getById(req.params.id);
+
     res.status(200).json(post);
   } catch {
     res
@@ -28,9 +28,9 @@ router.get("/:id", validatePostId, async (req, res) => {
 });
 
 router.delete("/:id", validatePostId, async (req, res) => {
-  const deleted = await db.remove(req.params.id);
-
   try {
+    const deleted = await db.remove(req.params.id);
+
     if (deleted) {
       res.status(200).json({ message: "The post was successfully deleted" });
     }
@@ -46,12 +46,11 @@ router.put("/:id", validatePostId, async (req, res) => {
     return res.status(400).json({ message: "Please provide a text" });
   }
 
-  const updated = await db.update(req.params.id, {
-    text: req.body.text,
-    user_id: req.user_id
-  });
-
   try {
+    const updated = await db.update(req.params.id, {
+      text: req.body.text,
+      user_id: req.user_id
+    });
     const post = await db.getById(req.params.id);
     res.status(202).json(post);
   } catch {
@@ -64,9 +63,8 @@ router.put("/:id", validatePostId, async (req, res) => {
 // custom middleware
 
 async function validatePostId(req, res, next) {
-  const post = await db.getById(req.params.id);
-
   try {
+    const post = await db.getById(req.params.id);
     if (post) {
       req.user_id = post.user_id;
       next();
