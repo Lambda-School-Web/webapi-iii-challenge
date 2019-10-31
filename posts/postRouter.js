@@ -16,15 +16,7 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", validatePostId, async (req, res) => {
-  try {
-    const post = await db.getById(req.params.id);
-
-    res.status(200).json(post);
-  } catch {
-    res
-      .status(500)
-      .json({ error: "There was an error while fetching the post" });
-  }
+  res.status(200).json(req.post);
 });
 
 router.delete("/:id", validatePostId, async (req, res) => {
@@ -67,6 +59,7 @@ async function validatePostId(req, res, next) {
     const post = await db.getById(req.params.id);
     if (post) {
       req.user_id = post.user_id;
+      req.post = post;
       next();
     } else {
       res.status(404).json({ message: "There's no post with that ID" });
